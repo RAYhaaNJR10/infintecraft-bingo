@@ -1,7 +1,15 @@
-import fs from 'fs/promises';
-import path from 'path';
+import {
+    collection,
+    doc,
+    getDocs,
+    getDoc,
+    setDoc,
+    deleteDoc,
+    DocumentData,
+} from 'firebase/firestore';
+import { db } from './firebase';
 
-const DB_PATH = path.join(process.cwd(), 'data', 'db.json');
+// ── Types ──────────────────────────────────────────────
 
 export type Team = {
     id: string;
@@ -11,50 +19,64 @@ export type Team = {
         id: string;
         label: string;
         completed: boolean;
-        completedAt?: number; // Timestamp when marked
+        completedAt?: number;
     }[];
     registeredAt: number;
-    startTime?: number; // Per-team start time
-    endTime?: number;   // When they finished or stopped
-    completedAt?: number; // Kept for backward compat/logic, same as endTime if win
+    startTime?: number;
+    endTime?: number;
+    completedAt?: number;
 };
 
 export type GameState = {
-    duration: number; // 12 minutes in ms
+    duration: number;
+    isStarted?: boolean;
+    startTime?: number | null;
 };
 
-export type Database = {
-    teams: Team[];
-    gameState: GameState;
-};
+// ── Collections ────────────────────────────────────────
 
-const INITIAL_DB: Database = {
-    teams: [],
-    gameState: {
-        duration: 12 * 60 * 1000,
-    },
-};
+const teamsCol = () => collection(db, 'teams');
+const gameStateDoc = () => doc(db, 'gameState', 'config');
 
-export async function getDB(): Promise<Database> {
-    try {
-        const data = await fs.readFile(DB_PATH, 'utf-8');
-        return JSON.parse(data);
-    } catch (error) {
-        try {
-            await fs.mkdir(path.dirname(DB_PATH), { recursive: true });
-            await fs.writeFile(DB_PATH, JSON.stringify(INITIAL_DB, null, 2));
-            return INITIAL_DB;
-        } catch (e) {
-            console.error("Failed to initialize DB", e);
-            return INITIAL_DB;
-        }
-    }
+// ── Team Operations ────────────────────────────────────
+
+export async function getTeams(): Promise<Team[]> {
+    const snapshot = await getDocs(teamsCol());
+    return snapshot.docs.map((d) => d.data() as Team);
 }
 
-export async function saveDB(db: Database) {
-    try {
-        await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
-    } catch (error) {
-        console.error("Failed to save DB", error);
-    }
+export async function getTeam(id: string): Promise<Team | null> {
+    const snap = await getDoc(doc(db, 'teams', id));
+    return snap.exists() ? (snap.data() as Team) : null;
+}
+
+export async function saveTeam(team: Team): Promise<void> {
+    // Remove undefined values (Firestore doesn't accept undefined)
+    const clean = JSON.parse(JSON.stringify(team));
+    await setDoc(doc(db, 'teams', team.id), clean);
+}
+
+export async function deleteTeamDoc(id: string): Promise<void> {
+    await deleteDoc(doc(db, 'teams', id));
+}
+
+// ── Game State Operations ──────────────────────────────
+
+const DEFAULT_GAME_STATE: GameState = {
+    duration: 12 * 60 * 1000, // 12 minutes
+    isStarted: false,
+    startTime: null,
+};
+
+export async function getGameState(): Promise<GameState> {
+    const snap = await getDoc(gameStateDoc());
+    if (snap.exists()) return snap.data() as GameState;
+    // Initialize if not present
+    await setDoc(gameStateDoc(), DEFAULT_GAME_STATE);
+    return DEFAULT_GAME_STATE;
+}
+
+export async function saveGameState(state: GameState): Promise<void> {
+    const clean = JSON.parse(JSON.stringify(state));
+    await setDoc(gameStateDoc(), clean);
 }

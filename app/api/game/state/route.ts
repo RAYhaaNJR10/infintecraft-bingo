@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDB } from '@/lib/db';
+import { getGameState, getTeam } from '@/lib/db';
 
 export async function GET(request: Request) {
     // Prevent caching for real-time updates
@@ -8,7 +8,7 @@ export async function GET(request: Request) {
     };
 
     try {
-        const db = await getDB();
+        const gameState = await getGameState();
 
         // Optional: Return specific team data if teamId param is present
         const { searchParams } = new URL(request.url);
@@ -16,14 +16,15 @@ export async function GET(request: Request) {
 
         let teamData = null;
         if (teamId) {
-            teamData = db.teams.find(t => t.id === teamId);
+            teamData = await getTeam(teamId);
         }
 
         return NextResponse.json({
-            gameState: db.gameState,
-            team: teamData, // Will be null if not found or not requested
+            gameState,
+            team: teamData,
         }, { headers });
     } catch (error) {
+        console.error('Game state error:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }

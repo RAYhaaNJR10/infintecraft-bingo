@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDB, saveDB } from '@/lib/db';
+import { getTeams, saveTeam } from '@/lib/db';
 import { generateBingoCard } from '@/lib/game-logic';
 
 export async function POST(request: Request) {
@@ -10,10 +10,10 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
         }
 
-        const db = await getDB();
+        const teams = await getTeams();
 
         // Check for duplicate team name
-        if (db.teams.some(t => t.name.toLowerCase() === name.toLowerCase())) {
+        if (teams.some(t => t.name.toLowerCase() === name.toLowerCase())) {
             return NextResponse.json({ error: 'Team name already exists' }, { status: 409 });
         }
 
@@ -25,11 +25,11 @@ export async function POST(request: Request) {
             registeredAt: Date.now(),
         };
 
-        db.teams.push(newTeam);
-        await saveDB(db);
+        await saveTeam(newTeam);
 
         return NextResponse.json({ success: true, teamId: newTeam.id });
     } catch (error) {
+        console.error('Register error:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }

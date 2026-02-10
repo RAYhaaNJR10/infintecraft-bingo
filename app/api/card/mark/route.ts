@@ -1,17 +1,15 @@
 import { NextResponse } from 'next/server';
-import { getDB, saveDB } from '@/lib/db';
+import { getTeam, saveTeam } from '@/lib/db';
 
 export async function POST(request: Request) {
     try {
         const { teamId, cellId } = await request.json();
-        const db = await getDB();
+        const team = await getTeam(teamId);
 
-        const teamIndex = db.teams.findIndex(t => t.id === teamId);
-        if (teamIndex === -1) {
+        if (!team) {
             return NextResponse.json({ error: 'Team not found' }, { status: 404 });
         }
 
-        const team = db.teams[teamIndex];
         if (!team.startTime) {
             return NextResponse.json({ error: 'Game not started for this team' }, { status: 400 });
         }
@@ -21,11 +19,10 @@ export async function POST(request: Request) {
         if (cell) {
             if (!cell.completed) {
                 cell.completed = true;
-                // Store RELATIVE time or ABSOLUTE? Absolute is safer.
                 cell.completedAt = Date.now();
             } else {
                 cell.completed = false;
-                cell.completedAt = undefined;
+                delete cell.completedAt;
             }
 
             // Check for Bingo (All 9)
@@ -35,16 +32,17 @@ export async function POST(request: Request) {
                 team.completedAt = Date.now();
                 team.endTime = Date.now();
             } else if (!allCompleted && team.completedAt) {
-                team.completedAt = undefined;
-                team.endTime = undefined;
+                delete team.completedAt;
+                delete team.endTime;
             }
 
-            await saveDB(db);
+            await saveTeam(team);
             return NextResponse.json({ success: true, card: team.card, completed: !!team.completedAt });
         }
 
         return NextResponse.json({ error: 'Cell not found' }, { status: 404 });
     } catch (error) {
+        console.error('Card mark error:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }

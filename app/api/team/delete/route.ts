@@ -1,16 +1,13 @@
 import { NextResponse } from 'next/server';
-import { getDB, saveDB } from '@/lib/db';
+import { deleteTeamDoc } from '@/lib/db';
 
 export async function POST(request: Request) {
     try {
         const { teamId } = await request.json();
-        const db = await getDB();
-
-        db.teams = db.teams.filter(t => t.id !== teamId);
-
-        await saveDB(db);
+        await deleteTeamDoc(teamId);
         return NextResponse.json({ success: true });
     } catch (error) {
+        console.error('Team delete error:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }

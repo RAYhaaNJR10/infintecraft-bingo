@@ -1,21 +1,22 @@
 import { NextResponse } from 'next/server';
-import { getDB, saveDB } from '@/lib/db';
+import { getGameState, saveGameState } from '@/lib/db';
 
 export async function POST() {
     try {
-        const db = await getDB();
+        const gameState = await getGameState();
 
-        if (db.gameState.isStarted) {
+        if (gameState.isStarted) {
             return NextResponse.json({ error: 'Game already started' }, { status: 400 });
         }
 
-        db.gameState.isStarted = true;
-        db.gameState.startTime = Date.now();
+        gameState.isStarted = true;
+        gameState.startTime = Date.now();
 
-        await saveDB(db);
+        await saveGameState(gameState);
 
-        return NextResponse.json({ success: true, startTime: db.gameState.startTime });
+        return NextResponse.json({ success: true, startTime: gameState.startTime });
     } catch (error) {
+        console.error('Game start error:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }
