@@ -1,0 +1,130 @@
+{
+  "teams": [
+    {
+      "id": "6b198674-712d-4506-a1b5-24f3656a52da",
+      "name": "The codebreakers",
+      "players": [
+        "RayGay",
+        "JohnPork",
+        "Idk"
+      ],
+      "card": [
+        {
+          "id": "cell-0-1770731778214",
+          "label": "API",
+          "completed": false,
+          "completedAt": 1770731806898
+        },
+        {
+          "id": "cell-1-1770731778214",
+          "label": "Graph",
+          "completed": false
+        },
+        {
+          "id": "cell-2-1770731778214",
+          "label": "Neural Network",
+          "completed": false
+        },
+        {
+          "id": "cell-3-1770731778214",
+          "label": "Cloud Computing",
+          "completed": false
+        },
+        {
+          "id": "cell-4-1770731778214",
+          "label": "Machine Learning",
+          "completed": false
+        },
+        {
+          "id": "cell-5-1770731778214",
+          "label": "GraphQL",
+          "completed": false
+        },
+        {
+          "id": "cell-6-1770731778214",
+          "label": "Dynamic Programming",
+          "completed": false
+        },
+        {
+          "id": "cell-7-1770731778214",
+          "label": "SQL",
+          "completed": false,
+          "completedAt": 1770731802965
+        },
+        {
+          "id": "cell-8-1770731778214",
+          "label": "C++",
+          "completed": false
+        }
+      ],
+      "registeredAt": 1770731778214
+    },
+    {
+      "id": "e0c6af9e-98f2-43ad-9429-dfe79b0681a3",
+      "name": "appy",
+      "players": [
+        "ray",
+        "john",
+        "idk"
+      ],
+      "card": [
+        {
+          "id": "cell-0-1770731902508",
+          "label": "Big O Notation",
+          "completed": true,
+          "completedAt": 1770731919053
+        },
+        {
+          "id": "cell-1-1770731902508",
+          "label": "WebSockets",
+          "completed": true,
+          "completedAt": 1770731919213
+        },
+        {
+          "id": "cell-2-1770731902508",
+          "label": "Virtual Machine",
+          "completed": true,
+          "completedAt": 1770731919798
+        },
+        {
+          "id": "cell-3-1770731902508",
+          "label": "Sorting Algorithm",
+          "completed": false
+        },
+        {
+          "id": "cell-4-1770731902508",
+          "label": "Binary Search",
+          "completed": false
+        },
+        {
+          "id": "cell-5-1770731902508",
+          "label": "CSS",
+          "completed": false
+        },
+        {
+          "id": "cell-6-1770731902508",
+          "label": "Debugging",
+          "completed": false
+        },
+        {
+          "id": "cell-7-1770731902508",
+          "label": "HTTP",
+          "completed": false
+        },
+        {
+          "id": "cell-8-1770731902508",
+          "label": "Agile",
+          "completed": false
+        }
+      ],
+      "registeredAt": 1770731902508,
+      "startTime": 1770731906480,
+      "endTime": 1770731950821
+    }
+  ],
+  "gameState": {
+    "isStarted": false,
+    "startTime": null,
+    "duration": 720000
+  }
+}

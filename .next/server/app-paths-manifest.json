@@ -1,0 +1,12 @@
+{
+  "/not-found": "app/not-found.js",
+  "/page": "app/page.js",
+  "/register/page": "app/register/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/api/register/route": "app/api/register/route.js",
+  "/game/page": "app/game/page.js",
+  "/api/game/state/route": "app/api/game/state/route.js",
+  "/api/team/start/route": "app/api/team/start/route.js",
+  "/api/card/mark/route": "app/api/card/mark/route.js",
+  "/api/team/end/route": "app/api/team/end/route.js"
+}
