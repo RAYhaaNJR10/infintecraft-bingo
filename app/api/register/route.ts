@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getTeams, saveTeam } from '@/lib/db';
 import { generateBingoCard } from '@/lib/game-logic';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
     try {
         const { name, players } = await request.json();

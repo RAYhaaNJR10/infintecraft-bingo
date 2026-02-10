@@ -1,6 +1,6 @@
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
+import { getFirestore, Firestore } from 'firebase/firestore';
+import { getAuth, Auth } from 'firebase/auth';
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -11,9 +11,28 @@ const firebaseConfig = {
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase (prevent duplicate initialization)
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+// Lazy initialization — prevents crash during Vercel build
+let _app: FirebaseApp | undefined;
+let _db: Firestore | undefined;
+let _auth: Auth | undefined;
 
-export const db = getFirestore(app);
-export const auth = getAuth(app);
-export default app;
+function getFirebaseApp(): FirebaseApp {
+    if (!_app) {
+        _app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+    }
+    return _app;
+}
+
+export function getFirestoreDB(): Firestore {
+    if (!_db) {
+        _db = getFirestore(getFirebaseApp());
+    }
+    return _db;
+}
+
+export function getFirebaseAuth(): Auth {
+    if (!_auth) {
+        _auth = getAuth(getFirebaseApp());
+    }
+    return _auth;
+}

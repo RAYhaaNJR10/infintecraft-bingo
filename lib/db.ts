@@ -5,9 +5,8 @@ import {
     getDoc,
     setDoc,
     deleteDoc,
-    DocumentData,
 } from 'firebase/firestore';
-import { db } from './firebase';
+import { getFirestoreDB } from './firebase';
 
 // ── Types ──────────────────────────────────────────────
 
@@ -35,8 +34,8 @@ export type GameState = {
 
 // ── Collections ────────────────────────────────────────
 
-const teamsCol = () => collection(db, 'teams');
-const gameStateDoc = () => doc(db, 'gameState', 'config');
+const teamsCol = () => collection(getFirestoreDB(), 'teams');
+const gameStateDoc = () => doc(getFirestoreDB(), 'gameState', 'config');
 
 // ── Team Operations ────────────────────────────────────
 
@@ -46,18 +45,18 @@ export async function getTeams(): Promise<Team[]> {
 }
 
 export async function getTeam(id: string): Promise<Team | null> {
-    const snap = await getDoc(doc(db, 'teams', id));
+    const snap = await getDoc(doc(getFirestoreDB(), 'teams', id));
     return snap.exists() ? (snap.data() as Team) : null;
 }
 
 export async function saveTeam(team: Team): Promise<void> {
     // Remove undefined values (Firestore doesn't accept undefined)
     const clean = JSON.parse(JSON.stringify(team));
-    await setDoc(doc(db, 'teams', team.id), clean);
+    await setDoc(doc(getFirestoreDB(), 'teams', team.id), clean);
 }
 
 export async function deleteTeamDoc(id: string): Promise<void> {
-    await deleteDoc(doc(db, 'teams', id));
+    await deleteDoc(doc(getFirestoreDB(), 'teams', id));
 }
 
 // ── Game State Operations ──────────────────────────────

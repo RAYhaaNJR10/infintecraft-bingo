@@ -1,18 +1,18 @@
 {
   "/_not-found": "app/_not-found.js",
-  "/api/card/mark/route": "app/api/card/mark/route.js",
+  "/admin/page": "app/admin/page.js",
+  "/page": "app/page.js",
+  "/leaderboard/page": "app/leaderboard/page.js",
+  "/game/page": "app/game/page.js",
+  "/register/page": "app/register/page.js",
   "/api/game/reset/route": "app/api/game/reset/route.js",
   "/api/game/start/route": "app/api/game/start/route.js",
   "/api/team/delete/route": "app/api/team/delete/route.js",
   "/api/game/state/route": "app/api/game/state/route.js",
-  "/admin/page": "app/admin/page.js",
-  "/api/register/route": "app/api/register/route.js",
+  "/api/card/mark/route": "app/api/card/mark/route.js",
   "/api/team/end/route": "app/api/team/end/route.js",
-  "/api/teams/route": "app/api/teams/route.js",
+  "/api/register/route": "app/api/register/route.js",
   "/api/team/start/route": "app/api/team/start/route.js",
-  "/api/team/update/route": "app/api/team/update/route.js",
-  "/game/page": "app/game/page.js",
-  "/page": "app/page.js",
-  "/leaderboard/page": "app/leaderboard/page.js",
-  "/register/page": "app/register/page.js"
+  "/api/teams/route": "app/api/teams/route.js",
+  "/api/team/update/route": "app/api/team/update/route.js"
 }

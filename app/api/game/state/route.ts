@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getGameState, getTeam } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
     // Prevent caching for real-time updates
     const headers = {

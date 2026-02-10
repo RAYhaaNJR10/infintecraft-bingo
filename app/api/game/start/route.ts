@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getGameState, saveGameState } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST() {
     try {
         const gameState = await getGameState();
