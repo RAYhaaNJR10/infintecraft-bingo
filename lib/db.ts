@@ -79,3 +79,21 @@ export async function saveGameState(state: GameState): Promise<void> {
     const clean = JSON.parse(JSON.stringify(state));
     await setDoc(gameStateDoc(), clean);
 }
+
+// ── Admin Password ─────────────────────────────────────
+
+const adminDoc = () => doc(getFirestoreDB(), 'config', 'admin');
+
+const DEFAULT_ADMIN_PASSWORD = '691306';
+
+export async function getAdminPassword(): Promise<string> {
+    const snap = await getDoc(adminDoc());
+    if (snap.exists()) return snap.data().password as string;
+    // Seed default password if not set
+    await setDoc(adminDoc(), { password: DEFAULT_ADMIN_PASSWORD });
+    return DEFAULT_ADMIN_PASSWORD;
+}
+
+export async function setAdminPassword(password: string): Promise<void> {
+    await setDoc(adminDoc(), { password });
+}

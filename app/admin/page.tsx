@@ -2,9 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Users, CheckCircle, Clock, Trash2, RotateCcw, Home, PlayCircle, Edit2, X, Eye, Lock, ShieldCheck } from "lucide-react";
-
-const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "691306";
+import { Users, CheckCircle, Clock, Trash2, RotateCcw, Home, PlayCircle, Edit2, X, Eye, Lock, ShieldCheck, Loader2 } from "lucide-react";
 
 type Team = {
     id: string;
@@ -21,6 +19,7 @@ export default function AdminPage() {
     const [passwordInput, setPasswordInput] = useState("");
     const [authError, setAuthError] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [verifying, setVerifying] = useState(false);
 
     const [teams, setTeams] = useState<Team[]>([]);
     const [showResetConfirm, setShowResetConfirm] = useState(false);
@@ -55,14 +54,28 @@ export default function AdminPage() {
         return () => clearInterval(interval);
     }, [isAuthenticated]);
 
-    const handleLogin = () => {
-        if (passwordInput === ADMIN_PASSWORD) {
-            setIsAuthenticated(true);
-            setAuthError(false);
-            sessionStorage.setItem("enigma_admin_auth", "true");
-        } else {
+    const handleLogin = async () => {
+        if (!passwordInput.trim() || verifying) return;
+        setVerifying(true);
+        setAuthError(false);
+        try {
+            const res = await fetch('/api/admin/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: passwordInput }),
+            });
+            const data = await res.json();
+            if (data.success) {
+                setIsAuthenticated(true);
+                sessionStorage.setItem("enigma_admin_auth", "true");
+            } else {
+                setAuthError(true);
+                setPasswordInput("");
+            }
+        } catch {
             setAuthError(true);
-            setPasswordInput("");
+        } finally {
+            setVerifying(false);
         }
     };
 
@@ -111,9 +124,14 @@ export default function AdminPage() {
 
                         <button
                             onClick={handleLogin}
-                            className="w-full py-3 bg-white text-black font-bold rounded-lg hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2"
+                            disabled={verifying}
+                            className="w-full py-3 bg-white text-black font-bold rounded-lg hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <ShieldCheck className="w-4 h-4" /> Unlock
+                            {verifying ? (
+                                <><Loader2 className="w-4 h-4 animate-spin" /> Verifying...</>
+                            ) : (
+                                <><ShieldCheck className="w-4 h-4" /> Unlock</>
+                            )}
                         </button>
                     </div>
 
